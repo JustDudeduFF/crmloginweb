@@ -212,7 +212,7 @@ function App() {
                   <div className="card-body text-center">
                     <h5 className="card-title">Basic</h5>
                     <h6 className="card-subtitle mb-2 text-muted">100 Mbps</h6>
-                    <p className="display-6 my-3">₹39.99<small className="fs-6">/mo</small></p>
+                    <p className="display-6 my-3">₹399<small className="fs-6">/mo</small></p>
                     <button className="btn btn-outline-primary">Choose Plan</button>
                   </div>
                 </div>
@@ -221,8 +221,8 @@ function App() {
                 <div className="card h-100 border-primary">
                   <div className="card-body text-center">
                     <h5 className="card-title">Pro</h5>
-                    <h6 className="card-subtitle mb-2 text-muted">500 Mbps</h6>
-                    <p className="display-6 my-3">₹59.99<small className="fs-6">/mo</small></p>
+                    <h6 className="card-subtitle mb-2 text-muted">300 Mbps</h6>
+                    <p className="display-6 my-3">₹649<small className="fs-6">/mo</small></p>
                     <button className="btn btn-primary">Choose Plan</button>
                   </div>
                 </div>
@@ -231,8 +231,8 @@ function App() {
                 <div className="card h-100">
                   <div className="card-body text-center">
                     <h5 className="card-title">Ultra</h5>
-                    <h6 className="card-subtitle mb-2 text-muted">1 Gbps</h6>
-                    <p className="display-6 my-3">₹79.99<small className="fs-6">/mo</small></p>
+                    <h6 className="card-subtitle mb-2 text-muted">500 Mbps</h6>
+                    <p className="display-6 my-3">₹799<small className="fs-6">/mo</small></p>
                     <button className="btn btn-outline-primary">Choose Plan</button>
                   </div>
                 </div>

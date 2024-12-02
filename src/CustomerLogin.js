@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import './customerLogin.css';
 import { useNavigate } from 'react-router-dom';
+import { db } from './FirebaseConfig';
+import { get, ref } from 'firebase/database';
 
 const CustomerLogin = () => {
   const navigate = useNavigate();
@@ -17,10 +19,32 @@ const CustomerLogin = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
-    // Here you would typically make an API call to authenticate the user
-    console.log('Login attempt with:', formData);
+
+    const userid = formData.userid;
+    const password = formData.password;
+
+    const userRef = ref(db, `Subscriber/${userid}`);
+    const userSnap = await get(userRef);
+
+    if(userSnap.exists()){
+      const pass = userSnap.child("pass").val();
+      if(pass === password){
+        localStorage.setItem('userid', userid);
+        navigate('/LandingPage');
+      }else{
+        alert('Password Not Matched');
+      }
+      
+    }else{
+      alert('UserId Not Found!')
+    }
+    
+
+    
+
+    
   };
 
   return (
@@ -50,9 +74,7 @@ const CustomerLogin = () => {
               required
             />
           </div>
-          <button onClick={() => {
-            navigate('/LandingPage');
-          }}   type="submit" className="login-button">
+          <button type="submit" className="login-button">
             Login
           </button>
         </form>

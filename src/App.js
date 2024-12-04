@@ -7,6 +7,7 @@ function App() {
   const navigate = useNavigate();
   const [showPrivacyModal, setShowPrivacyModal] = useState(false);
   const [showTermsModal, setShowTermsModal] = useState(false);
+  const [showRefundModal, setShowRefundModal] = useState(false);
 
   const PrivacyPolicyModal = () => (
     <div className={`modal ${showPrivacyModal ? 'show d-block' : ''}`} tabIndex="-1">
@@ -65,6 +66,39 @@ function App() {
           </div>
           <div className="modal-footer">
             <button type="button" className="btn btn-secondary" onClick={() => setShowTermsModal(false)}>Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  const RefunPolicyModal = () => (
+    <div className={`modal ${showRefundModal ? 'show d-block' : ''}`} tabIndex="-1">
+      <div className="modal-dialog modal-lg">
+        <div className="modal-content">
+          <div className="modal-header">
+            <h5 className="modal-title">Refund Policy</h5>
+            <button type="button" className="btn-close" onClick={() => setShowRefundModal(false)}></button>
+          </div>
+          <div className="modal-body">
+            <h6>1. Non-Refundable Charges</h6>
+            <p>All recharge amounts paid for internet services are strictly non-refundable and non-adjustable under any circumstances.</p><br/>
+            <p>Once a recharge is processed, it is considered final.</p>
+            
+            <h6>2. Security Deposit Refund</h6>
+            <p>If a security deposit has been paid for the use of our devices, it will be refunded upon the return of the device in usable condition.
+              The device will be inspected for any damages or misuse before processing the refund.
+              Refunds will not be issued for devices that are damaged, non-functional, or tampered with.</p>
+            
+            <h6>3. Refund Process</h6>
+            <p>Eligible refunds will be processed within [16-30 business days] after the device is returned and inspected.
+              Refunds will be credited to the original payment method or as agreed upon during the refund process.</p>
+            
+            <h6>4. Contact Us</h6>
+            <p>For any questions or concerns regarding refunds, please contact us at [+91 9999118971].</p>
+          </div>
+          <div className="modal-footer">
+            <button type="button" className="btn btn-secondary" onClick={() => setShowRefundModal(false)}>Close</button>
           </div>
         </div>
       </div>
@@ -293,16 +327,22 @@ function App() {
                 <h5>Legal</h5>
                 <ul className="list-unstyled">
                   <li>
-                    <a href="#" className="text-white text-decoration-none" onClick={(e) => {
+                    <a style={{cursor: "pointer"}} className="text-white text-decoration-none" onClick={(e) => {
                       e.preventDefault();
                       setShowPrivacyModal(true);
                     }}>Privacy Policy</a>
                   </li>
                   <li>
-                    <a href="#" className="text-white text-decoration-none" onClick={(e) => {
+                    <a style={{cursor: "pointer"}} className="text-white text-decoration-none" onClick={(e) => {
                       e.preventDefault();
                       setShowTermsModal(true);
                     }}>Terms & Conditions</a>
+                  </li>
+                  <li>
+                    <a style={{cursor: "pointer"}} className="text-white text-decoration-none" onClick={(e) => {
+                      e.preventDefault();
+                      setShowRefundModal(true);
+                    }}>Refund Policy</a>
                   </li>
                 </ul>
               </div>
@@ -318,6 +358,7 @@ function App() {
       </div>
       <PrivacyPolicyModal />
       <TermsAndConditionsModal />
+      <RefunPolicyModal/>
     </div>
   );
 }

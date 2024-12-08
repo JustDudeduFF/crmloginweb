@@ -314,7 +314,7 @@ function App() {
                 <h5>Contact</h5>
                 <p className="mb-1">
                   <i className="bi bi-telephone-fill me-2"></i>
-                  Customer Support: +91 1234567890
+                  Customer Support: +91 99991 18971
                 </p>
                 <p className="mb-1">
                   <i className="bi bi-envelope-fill me-2"></i>

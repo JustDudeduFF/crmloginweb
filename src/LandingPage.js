@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import './LandingPage.css';
 import { db } from './FirebaseConfig';
-import { get, ref } from 'firebase/database';
+import { get, ref, set, update } from 'firebase/database';
 import axios from 'axios';
 import { jsPDF } from "jspdf"; // Import jsPDF
 import autoTable from 'jspdf-autotable';
@@ -27,11 +27,8 @@ const LandingPage = () => {
   const paymentKey = Date.now();
 
 
-  const handlePayment = async () => {
+const handlePayment = async () => {
     try {
-
-
-      
       // Create order on backend
       const { data } = await axios.post('https://finer-chimp-heavily.ngrok-free.app/create-order', {
         amount: parseInt(customerbasicInfo.currentDue), // Amount in INR
@@ -84,14 +81,15 @@ const companyRef = ref(db, `Master/companys`);
 
 
 const updatePayment = async(paymentID) => {
-  const newLedgerKey2 = Date.now();
+  const paymentRef = ref(db, `Subscriber/${username}/payments/${paymentKey}`);
+  const ledgerRef = ref(db, `Subscriber/${username}/ledger/${paymentKey}`)
 
   fetchCompany();
   handleDownloadInvoice();
   const receiptData = {
     source: 'WebPay',
     receiptNo: `REC-${paymentKey}`,
-    billingPeriod: 'Web Payment',
+    billingPeriod: 'Due Payment',
     receiptDate: new Date().toISOString().split('T')[0],
     paymentMode: "Online-Web",
     bankname: "",
@@ -104,6 +102,21 @@ const updatePayment = async(paymentID) => {
     discountkey: "",
     authorized: true
   };
+
+  const ledgerData = {
+    type: 'Payment Paid',
+    date: currentdate,
+    particular: `Due Payment`,
+    debitamount: 0,
+    creditamount: parseFloat(amount),
+  };
+
+  await set(ledgerRef, ledgerData);
+  await set(paymentRef, receiptData).then(() => {
+    sendmessage();
+  });
+
+
 
 
 
@@ -122,7 +135,6 @@ const fetchCompany = async () => {
     });
   }
 }
-
 
 const handleDownloadInvoice = async() => {
   const doc = new jsPDF();
@@ -327,10 +339,14 @@ const handleDownloadInvoice = async() => {
 
 };
 
+const sendmessage = async () => {
+  const message = `Dear ${customerbasicInfo.name},\nThanks for making payment Rs. ${customerbasicInfo.currentDue} by Website On Date ${new Date().toISOString().split('T')[0]} your current balance is Rs. 0.\nfor any query contact on 919999118971.\n\nSIGMA BUSINESS SOLUTIONS.`;
+  const encodedMessage = encodeURIComponent(message);
+  const response = await axios.post(`https://finer-chimp-heavily.ngrok-free.app/send-message?number=91${9266125445}&message=${encodedMessage}`);
+}
+
 
   useEffect(() => {
-
-
     const fetcUserInfo = async() => {
       const userRef = ref(db, `Subscriber/${username}`);
 

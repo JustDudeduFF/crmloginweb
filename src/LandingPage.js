@@ -105,10 +105,10 @@ const updatePayment = async(paymentID) => {
 
   const ledgerData = {
     type: 'Payment Paid',
-    date: currentdate,
+    date: new Date().toISOString().split('T')[0],
     particular: `Due Payment`,
     debitamount: 0,
-    creditamount: parseFloat(amount),
+    creditamount: parseFloat(customerbasicInfo.currentDue),
   };
 
   await set(ledgerRef, ledgerData);

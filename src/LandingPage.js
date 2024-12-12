@@ -48,7 +48,7 @@ const handlePayment = async () => {
       });
 
       const options = {
-        key: 'rzp_test_EyChKvoXsNAqLa', // Replace with your Razorpay Key ID
+        key: 'rzp_live_Ig7L9kOGXdtYDt', // Replace with your Razorpay Key ID
         amount: data.amount,
         currency: data.currency,
         name: 'Sigma Business Solutions',
@@ -322,7 +322,7 @@ const handlerenewal = async () => {
     });
 
     const options = {
-      key: 'rzp_test_EyChKvoXsNAqLa', // Replace with your Razorpay Key ID
+      key: 'rzp_live_Ig7L9kOGXdtYDt', // Replace with your Razorpay Key ID
       amount: data.amount,
       currency: data.currency,
       name: 'Sigma Business Solutions',

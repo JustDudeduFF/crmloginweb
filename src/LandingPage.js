@@ -5,17 +5,30 @@ import { get, ref, set, update } from 'firebase/database';
 import axios from 'axios';
 import { jsPDF } from "jspdf"; // Import jsPDF
 import autoTable from 'jspdf-autotable';
+import { Modal } from 'react-bootstrap';
+
 
 const LandingPage = () => {
 
   const username = localStorage.getItem('userid');
+
+  const [showModal, setShowModal] = useState(false);
+  const [currentPlan, setCurrentPlan] = useState({
+    planName: '',
+    speed: '',
+    validity: '',
+    price: ''
+  });
 
   const [customerbasicInfo, setCustomerBasciInfo] = useState({
     name: '',
     address: '',
     email: '',
     mobile: '',
-    currentDue: ''
+    currentDue: '',
+    planName: '',
+    planAmount: '',
+    expireData: ''
   });
 
   const [paymentArray, setPaymentArray] = useState([]);
@@ -38,8 +51,8 @@ const handlePayment = async () => {
         key: 'rzp_live_Ig7L9kOGXdtYDt', // Replace with your Razorpay Key ID
         amount: data.amount,
         currency: data.currency,
-        name: 'JustDude',
-        description: 'Test Transaction',
+        name: 'Sigma Business Solutions',
+        description: 'Due Payment Paid',
         order_id: data.orderId,
         handler: async (response) => {
             console.log(response);
@@ -77,13 +90,101 @@ const handlePayment = async () => {
     }
 }
 
+const handlerenewal = async () => {
+  updateRenew("shivam");
+  if(parseInt(customerbasicInfo.currentDue) < 0){
+    alert('Dear Customer, you need to pay due amount first then after you can proceed with renewal');
+  }else{
+    try {
+      // Create order on backend
+      const { data } = await axios.post('https://finer-chimp-heavily.ngrok-free.app/create-order', {
+        amount: parseInt(currentPlan.price), // Amount in INR
+      });
+  
+      const options = {
+        key: 'rzp_live_Ig7L9kOGXdtYDt', // Replace with your Razorpay Key ID
+        amount: data.amount,
+        currency: data.currency,
+        name: 'Sigma Business Solutions',
+        description: 'Plan Renewal Transaction',
+        order_id: data.orderId,
+        handler: async (response) => {
+            console.log(response);
+          // Send response to backend for verification
+          const verifyResponse = await axios.post('https://finer-chimp-heavily.ngrok-free.app/verify-payment', {
+            razorpay_order_id: response.razorpay_order_id,
+            razorpay_payment_id: response.razorpay_payment_id,
+            razorpay_signature: response.razorpay_signature,
+          });
+  
+  
+          console.log(verifyResponse.data);
+  
+          if (verifyResponse.data.success) {
+            updateRenew(response.razorpay_payment_id);
+            alert('Payment Successful and Verified!');
+          } else {
+            alert('Payment Verification Failed!');
+          }
+        },
+        prefill: {
+          name: customerbasicInfo.name,
+          email: customerbasicInfo.email,
+          contact: customerbasicInfo.mobile,
+        },
+        theme: {
+          color: '#3399cc',
+        },
+      };
+  
+      const rzp = new window.Razorpay(options);
+      rzp.open();
+    } catch (error) {
+      console.error('Error during payment:', error);
+    }
+  }
+}
+
+// Add this new function to handle modal
+const handleRenewClick = async () => {
+  // Fetch current plan details from Firebase
+  try {
+    const masterPlanref = ref(db, `Master/Broadband Plan`);
+    const plansSnap = await get(masterPlanref);
+
+    if(plansSnap.exists()){
+      plansSnap.forEach((element) => {
+        const planname = element.val().planname;
+        const period = element.val().planperiod;
+        const speed = element.val().planSpeed;
+        const time = element.val().periodtime;
+
+        if(planname === customerbasicInfo.planName){
+          setCurrentPlan({
+            planName: planname,
+            speed: speed,
+            validity: `${time} ${period}`,
+            price: customerbasicInfo.planAmount
+          });
+        }
+      });
+    }else{
+      console.log("snap not found")
+    }
+    
+  
+    setShowModal(true);
+  } catch (error) {
+    console.error('Error fetching plan details:', error);
+  }
+};
+
 const companyRef = ref(db, `Master/companys`);
 
 
 const updatePayment = async(paymentID) => {
-  console.log(paymentID)
   const paymentRef = ref(db, `Subscriber/${username}/payments/${paymentKey}`);
-  const ledgerRef = ref(db, `Subscriber/${username}/ledger/${paymentKey}`)
+  const ledgerRef = ref(db, `Subscriber/${username}/ledger/${paymentKey}`);
 
   fetchCompany();
   
@@ -122,6 +223,54 @@ const updatePayment = async(paymentID) => {
 
 
 
+}
+
+const updateRenew = async (paymentID) => {
+  const planKey = Date.now();
+  const paymentRef = ref(db, `Subscriber/${username}/payments/${paymentKey}`);
+  const ledgerRef = ref(db, `Subscriber/${username}/ledger/${paymentKey}`);
+  const ledgerRefrenew = ref(db, `Subscriber/${username}/ledger/${planKey}`);
+  const planRef = ref(db, `Subscriber/${username}/planinfo${planKey}`);
+
+  const start = new Date().toISOString().split('T')[0];
+  const expiremonth = new Date().getMonth() ;
+  const expire = new Date(start);
+  expire.setMonth(expiremonth + (parseInt(currentPlan.validity.split(" ")[0])));
+  const end = expire.toISOString().split('T')[0];
+
+
+  const receiptData = {
+    source: 'WebPay',
+    receiptNo: `REC-${paymentKey}`,
+    billingPeriod: 'Due Payment',
+    receiptDate: new Date().toISOString().split('T')[0],
+    paymentMode: "Online-Web",
+    bankname: "",
+    amount: currentPlan.price,
+    discount: "",
+    collectedBy: "Admin",
+    transactionNo: paymentID,
+    modifiedBy: "",
+    narration: "Payment Done By Customer Self",
+    discountkey: "",
+    authorized: true
+  };
+
+  const ledgerData = {
+    type: 'Renewal',
+    date: new Date().toISOString().split('T')[0],
+    particular: `${currentPlan.planName} From ${start} to ${end}`,
+    debitamount: parseFloat(currentPlan.price),
+    creditamount: 0,
+  };
+
+  const ledgerData2 = {
+    type: 'Payment Collection',
+    date: new Date().toISOString().split('T')[0],
+    particular: `From ${start} to ${end}`,
+    debitamount: 0,
+    creditamount: parseFloat(currentPlan.price),
+  };
 }
 
 const fetchCompany = async () => {
@@ -365,7 +514,9 @@ const sendmessage = async () => {
           mobile: userSnap.child("mobileNo").val(),
           email: userSnap.child("email").val(),
           currentDue: userSnap.child("connectionDetails").child("dueAmount").val(),
-
+          planName: userSnap.child("connectionDetails").val().planName,
+          planAmount: userSnap.child("connectionDetails").val().planAmount,
+          expireData: userSnap.child("connectionDetails").val().expiryData
         });
 
         //LedgerData
@@ -444,7 +595,13 @@ const sendmessage = async () => {
                 className="pay-now-button"
                 onClick={handlePayment}
               >
-                Pay Now
+                Pay Due
+              </button>
+              <button 
+                className="renew-button"
+                onClick={handleRenewClick}
+              >
+                Renew Subscription
               </button>
             </div>
           </div>
@@ -466,7 +623,7 @@ const sendmessage = async () => {
               <tbody>
                 {
                   ledgerArray.length > 0 ? (
-                    ledgerArray.reverse().map(({date, type, damount, camount}, index) => {
+                    ledgerArray.map(({date, type, damount, camount}, index) => {
                       runningBalance += damount - camount;
                       
                       return(
@@ -491,6 +648,27 @@ const sendmessage = async () => {
           </div>
         </div>
       </main>
+      <Modal show={showModal} onHide={() => setShowModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Your Current Plan Details</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="plan-details">
+            <p><strong>Plan Name:</strong> {currentPlan.planName}</p>
+            <p><strong>Speed:</strong> {currentPlan.speed}</p>
+            <p><strong>Validity:</strong> {currentPlan.validity}</p>
+            <p><strong>Price:</strong> ₹{currentPlan.price}</p>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <button className='btn btn-secondary' onClick={() => setShowModal(false)}>
+            Close
+          </button>
+          <button className='btn btn-success' onClick={handlerenewal}>
+            Proceed to Payment
+          </button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };

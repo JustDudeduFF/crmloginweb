@@ -35,7 +35,7 @@ const handlePayment = async () => {
       });
 
       const options = {
-        key: 'rzp_test_5tAkkRIcyGgC0k', // Replace with your Razorpay Key ID
+        key: 'rzp_live_Ig7L9kOGXdtYDt', // Replace with your Razorpay Key ID
         amount: data.amount,
         currency: data.currency,
         name: 'JustDude',
@@ -54,7 +54,7 @@ const handlePayment = async () => {
           console.log(verifyResponse.data);
 
           if (verifyResponse.data.success) {
-            updatePayment(verifyResponse.data.razorpay_payment_id);
+            updatePayment(response.razorpay_payment_id);
             alert('Payment Successful and Verified!');
           } else {
             alert('Payment Verification Failed!');
@@ -81,11 +81,12 @@ const companyRef = ref(db, `Master/companys`);
 
 
 const updatePayment = async(paymentID) => {
+  console.log(paymentID)
   const paymentRef = ref(db, `Subscriber/${username}/payments/${paymentKey}`);
   const ledgerRef = ref(db, `Subscriber/${username}/ledger/${paymentKey}`)
 
   fetchCompany();
-  handleDownloadInvoice();
+  
   const receiptData = {
     source: 'WebPay',
     receiptNo: `REC-${paymentKey}`,
@@ -114,6 +115,7 @@ const updatePayment = async(paymentID) => {
   await set(ledgerRef, ledgerData);
   await set(paymentRef, receiptData).then(() => {
     sendmessage();
+    handleDownloadInvoice();
   });
 
 
@@ -340,7 +342,7 @@ const handleDownloadInvoice = async() => {
 };
 
 const sendmessage = async () => {
-  const message = `Dear ${customerbasicInfo.name},\nThanks for making payment Rs. ${customerbasicInfo.currentDue} by Website On Date ${new Date().toISOString().split('T')[0]} your current balance is Rs. 0.\nfor any query contact on 919999118971.\n\nSIGMA BUSINESS SOLUTIONS.`;
+  const message = `Dear ${customerbasicInfo.name},\nThanks for making payment Rs. ${customerbasicInfo.currentDue} by Online On Date ${new Date().toISOString().split('T')[0]} your current balance is Rs. 0.\nfor any query contact on 919999118971.\n\nSIGMA BUSINESS SOLUTIONS.`;
   const encodedMessage = encodeURIComponent(message);
   const response = await axios.post(`https://finer-chimp-heavily.ngrok-free.app/send-message?number=91${9266125445}&message=${encodedMessage}`);
 }

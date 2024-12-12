@@ -48,7 +48,7 @@ const handlePayment = async () => {
       });
 
       const options = {
-        key: 'rzp_live_Ig7L9kOGXdtYDt', // Replace with your Razorpay Key ID
+        key: 'rzp_test_EyChKvoXsNAqLa', // Replace with your Razorpay Key ID
         amount: data.amount,
         currency: data.currency,
         name: 'Sigma Business Solutions',
@@ -90,58 +90,277 @@ const handlePayment = async () => {
     }
 }
 
-const handlerenewal = async () => {
-  updateRenew("shivam");
-  if(parseInt(customerbasicInfo.currentDue) < 0){
-    alert('Dear Customer, you need to pay due amount first then after you can proceed with renewal');
-  }else{
-    try {
-      // Create order on backend
-      const { data } = await axios.post('https://finer-chimp-heavily.ngrok-free.app/create-order', {
-        amount: parseInt(currentPlan.price), // Amount in INR
-      });
-  
-      const options = {
-        key: 'rzp_live_Ig7L9kOGXdtYDt', // Replace with your Razorpay Key ID
-        amount: data.amount,
-        currency: data.currency,
-        name: 'Sigma Business Solutions',
-        description: 'Plan Renewal Transaction',
-        order_id: data.orderId,
-        handler: async (response) => {
-            console.log(response);
-          // Send response to backend for verification
-          const verifyResponse = await axios.post('https://finer-chimp-heavily.ngrok-free.app/verify-payment', {
-            razorpay_order_id: response.razorpay_order_id,
-            razorpay_payment_id: response.razorpay_payment_id,
-            razorpay_signature: response.razorpay_signature,
-          });
-  
-  
-          console.log(verifyResponse.data);
-  
-          if (verifyResponse.data.success) {
-            updateRenew(response.razorpay_payment_id);
-            alert('Payment Successful and Verified!');
-          } else {
-            alert('Payment Verification Failed!');
+
+const handleDownloadInvoice2 = async(start, end) => {
+  const doc = new jsPDF();
+
+  autoTable(doc, {
+    body: [
+      [
+        {
+          content: companyData.companyname,
+          styles: {
+            halign: 'left',
+            fontSize: 20,
+            textColor: '#ffffff',
           }
         },
-        prefill: {
-          name: customerbasicInfo.name,
-          email: customerbasicInfo.email,
-          contact: customerbasicInfo.mobile,
-        },
-        theme: {
-          color: '#3399cc',
-        },
-      };
-  
-      const rzp = new window.Razorpay(options);
-      rzp.open();
-    } catch (error) {
-      console.error('Error during payment:', error);
+        {
+          content: 'Invoice',
+          styles: {
+            halign: 'right',
+            fontSize: 20,
+            fontWeight: 'bold',
+            textColor: '#ffffff',
+          }
+        }
+      ],
+    ],
+    theme: 'plain',
+    styles: {
+      fillColor: '#3366ff',
     }
+  });
+
+
+  autoTable(doc, {
+    body: [
+      [
+        {
+          content: `Reference : #INV${paymentKey.toString().slice(-4)}` + '\nDate: ' + new Date().toISOString().split('T')[0],
+          styles: {
+            halign: 'right',
+            
+          }
+        }
+      ],
+    ],
+    theme: 'plain',
+    
+  });
+
+
+  autoTable(doc, {
+    body: [
+      [
+        {
+          content: 'Billed to:' + '\nCustomer Name: ' + customerbasicInfo.name + '\nAddress: ' + customerbasicInfo.address + '\nMobile No: ' + customerbasicInfo.mobile,
+          styles: {
+            halign: 'left',
+          }
+        },
+        {
+          content: 'From:' + '\n' + companyData.companyname + '\n' + companyData.companyaddress + '\nMobile No: ' + companyData.companymobile,
+          styles: {
+            halign: 'right',
+          }
+        }
+      ],
+    ],
+    theme: 'plain',
+    
+  });
+
+  autoTable(doc, {
+    body: [
+      [
+        {
+          content: 'Amount Paid: ',
+          styles: {
+            fontSize: 18,
+            halign: 'right',
+          }
+        }
+      ],
+
+      [
+        {
+          content:  currentPlan.price + '.00 Rs',
+          styles: {
+            halign: 'right',
+            fontSize: 15,
+            textColor: '#3366ff',
+          }
+        }
+      ],
+
+      [
+        {
+          content: 'Payment Mode: ' + "Web Pay",
+          styles: {
+            halign: 'right',
+          }
+        }
+      ]
+    ],
+    theme: 'plain',
+    
+  });
+
+  autoTable(doc, {
+    body: [
+      [
+        {
+          content: 'Products and Services',
+          styles: {
+            halign: 'left',
+            fontSize: 14,
+          }
+        }
+      ]
+    ],
+    theme: 'plain',
+    
+  });
+
+
+  autoTable(doc, {
+    head: [
+      ['S. No.', 'Particular', 'Quantity', 'Rate', 'Discount', 'Amount']
+    ],
+    body: [
+      ['1', `${currentPlan.planName}`, `${currentPlan.validity}`, `${parseInt(currentPlan.price)}`, `${0}`, `${currentPlan.price}`]
+    ],
+    theme: 'striped',
+    headStyles: {
+      fillColor: '#343a40',
+    }
+  });
+
+
+  autoTable(doc, {
+    body: [
+      [
+        {
+          content: 'Total Amount: ' + currentPlan.price + '.00 Rs',
+        styles: {
+            halign: 'right',
+            fontSize: 14,
+          }
+        }
+      ]
+    ],
+    theme: 'plain',
+  });
+
+  autoTable(doc, {
+    body: [
+      [
+        {
+          content: 'Thank you for your business!' + '\n' + 'For any queries, please contact us at ' + companyData.companymobile + '\n' + 'This is an auto generated invoice and does not require any signature.',
+          styles: {
+            halign: 'center',
+            fontSize: 12,
+          }
+        }
+      ]
+    ],
+    theme: 'plain',
+  });
+
+  autoTable(doc, {
+    body: [
+      [
+        {
+          content: 'Powered by: CRMDude',
+          styles: {
+            halign: 'left',
+            fontSize: 12,
+          }
+        }
+      ]
+    ],
+    theme: 'plain',
+  });
+
+  const pdfBlob = doc.output('blob');
+
+  const mailData = new FormData();
+  mailData.append('pdf', pdfBlob, `${new Date().toISOString().split('T')[0]}.pdf`);
+  mailData.append('to', 'justdudehere@gmail.com');
+  mailData.append('subject', 'Payment Status And Invoice');
+  mailData.append('text', `Dear ${customerbasicInfo.name}, \nYour Payment has been done for receipt period ${"Broadband Payment"}.\n\nPayment Mode: ${"Web Pay"}\n\nReceipt Date: ${new Date().toISOString().split('T')[0]}\n\nReceipt No.: ${paymentKey}\n\nThank you for your business.\nRegards,\nSigma Business Solutions`)
+
+  try{
+    const response = await axios.post('https://finer-chimp-heavily.ngrok-free.app/send-invoice', mailData);
+    if(response.ok){
+      console.log('Invoice Sent Succesfully');
+    }else{
+      console.log('Failed to Send Invoice');
+    }
+  }catch(error){
+    console.log('Error to Send Mail: '+ error);
+  }
+
+};
+
+const handlerenewal = async () => {
+  if(parseInt(customerbasicInfo.currentDue) > 0){
+    alert('Dear Customer, you need to pay due amount first then after you can proceed with renewal');
+    return;
+  }
+
+  const currentExp = new Date(customerbasicInfo.expireData);
+
+  const today = new Date().getTime();
+  const lastto = currentExp.getTime();
+
+  const timeDiff = lastto - today;
+  const daysDiff = Math.ceil(timeDiff / (1000*3600*24));
+
+  if(daysDiff > 3){
+    alert('You Plan is expired after ' + daysDiff + " Days. You can proceed last 3 days before your plan expired")
+    return;
+  }
+
+
+
+  try {
+    // Create order on backend
+    const { data } = await axios.post('https://finer-chimp-heavily.ngrok-free.app/create-order', {
+      amount: parseInt(currentPlan.price), // Amount in INR
+    });
+
+    const options = {
+      key: 'rzp_test_EyChKvoXsNAqLa', // Replace with your Razorpay Key ID
+      amount: data.amount,
+      currency: data.currency,
+      name: 'Sigma Business Solutions',
+      description: 'Plan Renewal Transaction',
+      order_id: data.orderId,
+      handler: async (response) => {
+          console.log(response);
+        // Send response to backend for verification
+        const verifyResponse = await axios.post('https://finer-chimp-heavily.ngrok-free.app/verify-payment', {
+          razorpay_order_id: response.razorpay_order_id,
+          razorpay_payment_id: response.razorpay_payment_id,
+          razorpay_signature: response.razorpay_signature,
+        });
+
+
+        console.log(verifyResponse.data);
+
+        if (verifyResponse.data.success) {
+          updateRenew(response.razorpay_payment_id);
+          alert('Payment Successful and Verified!');
+        } else {
+          alert('Payment Verification Failed!');
+        }
+      },
+      prefill: {
+        name: customerbasicInfo.name,
+        email: customerbasicInfo.email,
+        contact: customerbasicInfo.mobile,
+      },
+      theme: {
+        color: '#3399cc',
+      },
+    };
+
+    const rzp = new window.Razorpay(options);
+    rzp.open();
+  } catch (error) {
+    console.error('Error during payment:', error);
   }
 }
 
@@ -185,9 +404,6 @@ const companyRef = ref(db, `Master/companys`);
 const updatePayment = async(paymentID) => {
   const paymentRef = ref(db, `Subscriber/${username}/payments/${paymentKey}`);
   const ledgerRef = ref(db, `Subscriber/${username}/ledger/${paymentKey}`);
-
-  fetchCompany();
-  
   const receiptData = {
     source: 'WebPay',
     receiptNo: `REC-${paymentKey}`,
@@ -212,15 +428,17 @@ const updatePayment = async(paymentID) => {
     debitamount: 0,
     creditamount: parseFloat(customerbasicInfo.currentDue),
   };
+  
+  const connectionDetails = {
+    dueAmount: 0
+  }
 
   await set(ledgerRef, ledgerData);
-  await set(paymentRef, receiptData).then(() => {
+  await set(paymentRef, receiptData);
+  await update(ref(db, `Subscriber/${username}/connectionDetails`), connectionDetails).then(() => {
     sendmessage();
     handleDownloadInvoice();
   });
-
-
-
 
 
 }
@@ -230,13 +448,28 @@ const updateRenew = async (paymentID) => {
   const paymentRef = ref(db, `Subscriber/${username}/payments/${paymentKey}`);
   const ledgerRef = ref(db, `Subscriber/${username}/ledger/${paymentKey}`);
   const ledgerRefrenew = ref(db, `Subscriber/${username}/ledger/${planKey}`);
-  const planRef = ref(db, `Subscriber/${username}/planinfo${planKey}`);
+  const planRef = ref(db, `Subscriber/${username}/planinfo/${planKey}`);
 
-  const start = new Date().toISOString().split('T')[0];
-  const expiremonth = new Date().getMonth() ;
+  const currentExp = new Date(customerbasicInfo.expireData);
+
+
+  const todayDate = new Date();
+
+  let start = new Date().toISOString().split('T')[0];
+
+  if(todayDate >= currentExp){
+    start = new Date().toISOString().split('T')[0];
+  }else{
+    currentExp.setDate(currentExp.getDate() + 1);
+    start = currentExp.toISOString().split('T')[0];
+  }
+
+
+  const expiremonth = new Date(start).getMonth() ;
   const expire = new Date(start);
   expire.setMonth(expiremonth + (parseInt(currentPlan.validity.split(" ")[0])));
   const end = expire.toISOString().split('T')[0];
+
 
 
   const receiptData = {
@@ -248,7 +481,7 @@ const updateRenew = async (paymentID) => {
     bankname: "",
     amount: currentPlan.price,
     discount: "",
-    collectedBy: "Admin",
+    collectedBy: "",
     transactionNo: paymentID,
     modifiedBy: "",
     narration: "Payment Done By Customer Self",
@@ -271,6 +504,33 @@ const updateRenew = async (paymentID) => {
     debitamount: 0,
     creditamount: parseFloat(currentPlan.price),
   };
+
+  const planData = {
+    action: 'Renewal',
+    activationDate: start,
+    compeletedate: todayDate.toISOString().split('T')[0],
+    completedby: 'Customer',
+    expiryDate: end,
+    isp: '',
+    planAmount: currentPlan.price,
+    planName: currentPlan.planName,
+    remarks: 'Plan Renew by cutomer from website'
+  }
+
+  const connectionDetails = {
+    dueAmount: 0,
+    activationDate: start,
+    expiryDate: end
+  }
+
+
+  await set(paymentRef, receiptData);
+  await set(ledgerRef, ledgerData2);
+  await set(planRef, planData);
+  await set(ledgerRefrenew, ledgerData);
+  await update(ref(db, `Subscriber/${username}/connectionDetails`), connectionDetails).then(() => {
+    handleDownloadInvoice2(start, end);
+  });
 }
 
 const fetchCompany = async () => {
@@ -323,7 +583,7 @@ const handleDownloadInvoice = async() => {
     body: [
       [
         {
-          content: `Reference : #INV${paymentKey.slice(10, 13)}` + '\nDate: ' + new Date().toISOString().split('T')[0],
+          content: `Reference : #INV${paymentKey.toString().slice(-4)}` + '\nDate: ' + new Date().toISOString().split('T')[0],
           styles: {
             halign: 'right',
             
@@ -412,10 +672,10 @@ const handleDownloadInvoice = async() => {
 
   autoTable(doc, {
     head: [
-      ['S. No.', '', 'Quantity', 'Rate', 'Discount', 'Amount']
+      ['S. No.', 'Particular', 'Quantity', 'Rate', 'Discount', 'Amount']
     ],
     body: [
-      ['1', `${customerbasicInfo.address}`, `${"Broadband Payment"}`, `${parseInt(customerbasicInfo.currentDue)}`, `${0}`, `${customerbasicInfo.currentDue}`]
+      ['1', `Due Payment`, `--`, `${parseInt(customerbasicInfo.currentDue)}`, `${0}`, `${customerbasicInfo.currentDue}`]
     ],
     theme: 'striped',
     headStyles: {
@@ -491,9 +751,9 @@ const handleDownloadInvoice = async() => {
 };
 
 const sendmessage = async () => {
-  const message = `Dear ${customerbasicInfo.name},\nThanks for making payment Rs. ${customerbasicInfo.currentDue} by Online On Date ${new Date().toISOString().split('T')[0]} your current balance is Rs. 0.\nfor any query contact on 919999118971.\n\nSIGMA BUSINESS SOLUTIONS.`;
+  const message = `Dear ${customerbasicInfo.name},\nThanks for making payment Rs. ${customerbasicInfo.currentDue} by Website On Date ${new Date().toISOString().split('T')[0]} your current balance is Rs. 0.\nfor any query contact on 919999118971.\n\nSIGMA BUSINESS SOLUTIONS.`;
   const encodedMessage = encodeURIComponent(message);
-  const response = await axios.post(`https://finer-chimp-heavily.ngrok-free.app/send-message?number=91${9266125445}&message=${encodedMessage}`);
+  await axios.post(`https://finer-chimp-heavily.ngrok-free.app/send-message?number=91${9266125445}&message=${encodedMessage}`);
 }
 
 
@@ -516,7 +776,7 @@ const sendmessage = async () => {
           currentDue: userSnap.child("connectionDetails").child("dueAmount").val(),
           planName: userSnap.child("connectionDetails").val().planName,
           planAmount: userSnap.child("connectionDetails").val().planAmount,
-          expireData: userSnap.child("connectionDetails").val().expiryData
+          expireData: userSnap.child("connectionDetails").val().expiryDate
         });
 
         //LedgerData
@@ -543,6 +803,7 @@ const sendmessage = async () => {
     }
 
     fetcUserInfo();
+    fetchCompany();
   }, []);
 
   let runningBalance = 0;

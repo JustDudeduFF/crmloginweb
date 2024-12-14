@@ -383,7 +383,7 @@ const handleRenewClick = async () => {
             planName: planname,
             speed: speed,
             validity: `${time} ${period}`,
-            price: customerbasicInfo.planAmount
+            price: customerbasicInfo.planAmount.toString()
           });
         }
       });
@@ -775,7 +775,7 @@ const sendmessage = async () => {
           email: userSnap.child("email").val(),
           currentDue: userSnap.child("connectionDetails").child("dueAmount").val(),
           planName: userSnap.child("connectionDetails").val().planName,
-          planAmount: userSnap.child("connectionDetails").val().planAmount,
+          planAmount: userSnap.child("connectionDetails").val().planAmount.toString(),
           expireData: userSnap.child("connectionDetails").val().expiryDate
         });
 

@@ -523,11 +523,21 @@ const updateRenew = async (paymentID) => {
     expiryDate: end
   }
 
+  const notifyRenewal = {
+    userid: username,
+    fullName: customerbasicInfo.name,
+    mobile: customerbasicInfo.mobile,
+    address: customerbasicInfo.address,
+    source: "Website",
+    date: new Date().toISOString().split('T')[0]
+  }
+
 
   await set(paymentRef, receiptData);
   await set(ledgerRef, ledgerData2);
   await set(planRef, planData);
   await set(ledgerRefrenew, ledgerData);
+  await set(ref(db, `onlinerenewals/${planKey}`), notifyRenewal);
   await update(ref(db, `Subscriber/${username}/connectionDetails`), connectionDetails).then(() => {
     handleDownloadInvoice2(start, end);
   });

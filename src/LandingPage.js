@@ -43,7 +43,7 @@ const LandingPage = () => {
 const handlePayment = async () => {
     try {
       // Create order on backend
-      const { data } = await axios.post('https://finer-chimp-heavily.ngrok-free.app/create-order', {
+      const { data } = await axios.post('https://api.justdude.in/create-order', {
         amount: parseInt(customerbasicInfo.currentDue), // Amount in INR
       });
 
@@ -57,7 +57,7 @@ const handlePayment = async () => {
         handler: async (response) => {
             console.log(response);
           // Send response to backend for verification
-          const verifyResponse = await axios.post('https://finer-chimp-heavily.ngrok-free.app/verify-payment', {
+          const verifyResponse = await axios.post('https://api.justdude.in/verify-payment', {
             razorpay_order_id: response.razorpay_order_id,
             razorpay_payment_id: response.razorpay_payment_id,
             razorpay_signature: response.razorpay_signature,
@@ -91,7 +91,7 @@ const handlePayment = async () => {
 }
 
 
-const handleDownloadInvoice2 = async(start, end) => {
+const handleDownloadInvoice2 = async() => {
   const doc = new jsPDF();
 
   autoTable(doc, {
@@ -282,7 +282,7 @@ const handleDownloadInvoice2 = async(start, end) => {
   mailData.append('text', `Dear ${customerbasicInfo.name}, \nYour Payment has been done for receipt period ${"Broadband Payment"}.\n\nPayment Mode: ${"Web Pay"}\n\nReceipt Date: ${new Date().toISOString().split('T')[0]}\n\nReceipt No.: ${paymentKey}\n\nThank you for your business.\nRegards,\nSigma Business Solutions`)
 
   try{
-    const response = await axios.post('https://finer-chimp-heavily.ngrok-free.app/send-invoice', mailData);
+    const response = await axios.post('https://api.justdude.in/send-invoice', mailData);
     if(response.ok){
       console.log('Invoice Sent Succesfully');
     }else{
@@ -317,7 +317,7 @@ const handlerenewal = async () => {
 
   try {
     // Create order on backend
-    const { data } = await axios.post('https://finer-chimp-heavily.ngrok-free.app/create-order', {
+    const { data } = await axios.post('https://api.justdude.in/create-order', {
       amount: parseInt(currentPlan.price), // Amount in INR
     });
 
@@ -331,7 +331,7 @@ const handlerenewal = async () => {
       handler: async (response) => {
           console.log(response);
         // Send response to backend for verification
-        const verifyResponse = await axios.post('https://finer-chimp-heavily.ngrok-free.app/verify-payment', {
+        const verifyResponse = await axios.post('https://api.justdude.in/verify-payment', {
           razorpay_order_id: response.razorpay_order_id,
           razorpay_payment_id: response.razorpay_payment_id,
           razorpay_signature: response.razorpay_signature,
@@ -383,7 +383,7 @@ const handleRenewClick = async () => {
             planName: planname,
             speed: speed,
             validity: `${time} ${period}`,
-            price: customerbasicInfo.planAmount.toString()
+            price: customerbasicInfo.planAmount
           });
         }
       });
@@ -748,7 +748,7 @@ const handleDownloadInvoice = async() => {
   mailData.append('text', `Dear ${customerbasicInfo.name}, \nYour Payment has been done for receipt period ${"Broadband Payment"}.\n\nPayment Mode: ${"Web Pay"}\n\nReceipt Date: ${new Date().toISOString().split('T')[0]}\n\nReceipt No.: ${paymentKey}\n\nThank you for your business.\nRegards,\nSigma Business Solutions`)
 
   try{
-    const response = await axios.post('https://finer-chimp-heavily.ngrok-free.app/send-invoice', mailData);
+    const response = await axios.post('https://api.justdude.in/send-invoice', mailData);
     if(response.ok){
       console.log('Invoice Sent Succesfully');
     }else{
@@ -763,7 +763,7 @@ const handleDownloadInvoice = async() => {
 const sendmessage = async () => {
   const message = `Dear ${customerbasicInfo.name},\nThanks for making payment Rs. ${customerbasicInfo.currentDue} by Website On Date ${new Date().toISOString().split('T')[0]} your current balance is Rs. 0.\nfor any query contact on 919999118971.\n\nSIGMA BUSINESS SOLUTIONS.`;
   const encodedMessage = encodeURIComponent(message);
-  await axios.post(`https://finer-chimp-heavily.ngrok-free.app/send-message?number=91${9266125445}&message=${encodedMessage}`);
+  await axios.post(`https://api.justdude.in/send-message?number=91${9266125445}&message=${encodedMessage}`);
 }
 
 
@@ -785,7 +785,7 @@ const sendmessage = async () => {
           email: userSnap.child("email").val(),
           currentDue: userSnap.child("connectionDetails").child("dueAmount").val(),
           planName: userSnap.child("connectionDetails").val().planName,
-          planAmount: userSnap.child("connectionDetails").val().planAmount.toString(),
+          planAmount: userSnap.child("connectionDetails").val().planAmount,
           expireData: userSnap.child("connectionDetails").val().expiryDate
         });
 

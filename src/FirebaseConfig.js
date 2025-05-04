@@ -17,6 +17,7 @@ const app = initializeApp(firebaseConfig)
 
 export const db = getDatabase(app);
 export const storage  = getStorage(app);
+export const api = 'https://api.justdude.in'
 
 export default app;
 

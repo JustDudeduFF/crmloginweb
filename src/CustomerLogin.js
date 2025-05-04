@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import './customerLogin.css';
 import { useNavigate } from 'react-router-dom';
-import { db } from './FirebaseConfig';
-import { get, ref } from 'firebase/database';
+import { api } from './FirebaseConfig';
+import axios from 'axios';
+import { Modal } from 'react-bootstrap';
+;
 
 const CustomerLogin = () => {
   const navigate = useNavigate();
@@ -10,6 +12,10 @@ const CustomerLogin = () => {
     userid: '',
     password: ''
   });
+
+  const [fetchedData, setFetechedData] = useState([]);
+
+  const [showModal, setShowModal] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,24 +28,38 @@ const CustomerLogin = () => {
   const handleSubmit = async(e) => {
     e.preventDefault();
 
+    setShowModal(true);
     const userid = formData.userid;
     const password = formData.password;
 
-    const userRef = ref(db, `Subscriber/${userid}`);
-    const userSnap = await get(userRef);
+    try{
+      const response = await axios.get(api+`/login?userkey=${userid}&password=${password}`);
 
-    if(userSnap.exists()){
-      const pass = userSnap.child("pass").val();
-      if(pass === password){
-        localStorage.setItem('userid', userid);
-        navigate('/LandingPage');
-      }else{
-        alert('Password Not Matched');
+      if(response.status !== 200 ){
+        return;
       }
-      
-    }else{
-      alert('UserId Not Found!')
+
+      const data = response.data;
+      if(data){
+        const userData = [];
+        Object.keys(data).forEach((user) => {
+          const acc = data[user];
+          userData.push(acc);
+        });
+        
+        setFetechedData(userData);
+        
+        
+      }
+
+    }catch(e){
+      console.log(e);
     }
+
+    
+
+
+
     
 
     
@@ -53,7 +73,7 @@ const CustomerLogin = () => {
         <h2>Customer Login</h2>
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label htmlFor="userid">User ID</label>
+            <label htmlFor="userid">User ID/Mobile</label>
             <input
               type="text"
               id="userid"
@@ -79,9 +99,49 @@ const CustomerLogin = () => {
           </button>
         </form>
         <div className="additional-options">
-          <a href="/forgot-password">Forgot Password?</a>
+          <label>Your Default Password is: 123456</label>
+          <a href='/' onClick={() => setShowModal(true)}>Forgot Password?</a>
         </div>
       </div>
+
+
+      <Modal show={showModal} onHide={() => setShowModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Your Accounts</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className=''>
+            <table className='table table-striped table-hover align-middle'>
+              <thead className='table-primary'>
+                <tr>
+                  <th>Name</th>
+                  <th>Mobile</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {fetchedData.length > 0 ? (
+                  fetchedData.map(({userid, mobile}, index )=> (
+                    <tr key={index}>
+                      <td>{userid}</td>
+                      <td>{mobile}</td>
+                      <td><button onClick={() => {
+                        localStorage.setItem('userid', userid);
+                        navigate('/LandingPage')
+                      }} className='btn btn-success'>Login</button></td>
+                    </tr>
+                  ))
+                ):(
+                  <tr>
+
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </Modal.Body>
+
+      </Modal>
     </div>
   );
 };

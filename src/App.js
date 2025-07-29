@@ -317,9 +317,13 @@ function App() {
                   Customer Support: +91 99991 18971
                 </p>
                 <p className="mb-1">
+                  <i className="bi bi-telephone-fill me-2"></i>
+                  Whatsapp Support: +91 92116 36311
+                </p>
+                <p className="mb-1">
                   <i className="bi bi-envelope-fill me-2"></i>
                   <a href="mailto:support@sigmanetworks.com" className="text-white text-decoration-none">
-                    support@sigmanetworks.com
+                    Mail Support: sigmafibernet.71@gmail.com
                   </a>
                 </p>
               </div>

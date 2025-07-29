@@ -95,7 +95,7 @@ function App() {
               Refunds will be credited to the original payment method or as agreed upon during the refund process.</p>
             
             <h6>4. Contact Us</h6>
-            <p>For any questions or concerns regarding refunds, please contact us at [+91 9999118971].</p>
+            <p>For any questions or concerns regarding refunds, please contact us at [+91 9211636311].</p>
           </div>
           <div className="modal-footer">
             <button type="button" className="btn btn-secondary" onClick={() => setShowRefundModal(false)}>Close</button>

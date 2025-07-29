@@ -277,7 +277,7 @@ const handleDownloadInvoice2 = async() => {
 
   const mailData = new FormData();
   mailData.append('pdf', pdfBlob, `${new Date().toISOString().split('T')[0]}.pdf`);
-  mailData.append('to', 'justdudehere@gmail.com');
+  mailData.append('to', customerbasicInfo.email);
   mailData.append('subject', 'Payment Status And Invoice');
   mailData.append('text', `Dear ${customerbasicInfo.name}, \nYour Payment has been done for receipt period ${"Broadband Payment"}.\n\nPayment Mode: ${"Web Pay"}\n\nReceipt Date: ${new Date().toISOString().split('T')[0]}\n\nReceipt No.: ${paymentKey}\n\nThank you for your business.\nRegards,\nSigma Business Solutions`)
 
@@ -761,9 +761,9 @@ const handleDownloadInvoice = async() => {
 };
 
 const sendmessage = async () => {
-  const message = `Dear ${customerbasicInfo.name},\nThanks for making payment Rs. ${customerbasicInfo.currentDue} by Website On Date ${new Date().toISOString().split('T')[0]} your current balance is Rs. 0.\nfor any query contact on 919999118971.\n\nSIGMA BUSINESS SOLUTIONS.`;
+  const message = `Dear ${customerbasicInfo.name},\nThanks for making payment Rs. ${customerbasicInfo.currentDue} by Website On Date ${new Date().toISOString().split('T')[0]} your current balance is Rs. 0.\nfor any query contact on 9211636311.\n\nSIGMA BUSINESS SOLUTIONS.`;
   const encodedMessage = encodeURIComponent(message);
-  await axios.post(`https://api.justdude.in/send-message?number=91${9266125445}&message=${encodedMessage}`);
+  await axios.post(`https://api.justdude.in/send-message?number=91${customerbasicInfo.mobile}&message=${encodedMessage}`);
 }
 
 

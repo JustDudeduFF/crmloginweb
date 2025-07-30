@@ -323,7 +323,14 @@ function App() {
                 <p className="mb-1">
                   <i className="bi bi-envelope-fill me-2"></i>
                   <a href="mailto:support@sigmanetworks.com" className="text-white text-decoration-none">
-                    Mail Support: sigmafibernet.71@gmail.com
+                    Support Mail: info@sigmanetworks.in
+                  </a>
+                </p>
+
+                <p className="mb-1">
+                  <i className="bi bi-envelope-fill me-2"></i>
+                  <a href="mailto:support@sigmanetworks.com" className="text-white text-decoration-none">
+                    Sales Mail: Sales@sigmanetworks.in
                   </a>
                 </p>
               </div>
@@ -353,7 +360,7 @@ function App() {
             </div>
             <hr className="my-3" />
             <div className="text-center">
-              <small>&copy; 2024 Sigma Networks. All rights reserved.</small>
+              <small>&copy; 2025 Sigma Networks. All rights reserved.</small>
               <br />
               <small>Powered by: JustDude</small>
             </div>

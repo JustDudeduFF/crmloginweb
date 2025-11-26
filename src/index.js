@@ -17,7 +17,7 @@ root.render(
     <BrowserRouter>
       <nav className="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
         <div className="container-fluid">
-          <a className="navbar-brand" href="/">Sigma Networks</a>
+          <a className="navbar-brand" href="/">Sigma Business Solutions</a>
           <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
             <span className="navbar-toggler-icon"></span>
           </button>
@@ -28,15 +28,15 @@ root.render(
               <a className="nav-link" href="#services">Services</a>
               <a className="nav-link" href="#pricing">Plans & Pricing</a>
               <a className="nav-link" href="#contact">Contact</a>
-              <a className="nav-link" href="/CustomerLogin">Customer Login</a>
+              <a className="nav-link" href="https://user.sigmanetworks.in">Customer Login</a>
             </div>
           </div>
         </div>
       </nav>
       <Routes>
         <Route path="/" element={<App />} />
-        <Route path="/CustomerLogin" element={<CustomerLogin />} />
-        <Route path="/LandingPage" element={<LandingPage />} />
+        {/* <Route path="/CustomerLogin" element={<CustomerLogin />} />
+        <Route path="/LandingPage" element={<LandingPage />} /> */}
       </Routes>
     </BrowserRouter>
   </React.StrictMode>

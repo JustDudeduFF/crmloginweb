@@ -1,16 +1,14 @@
-import React, { useState } from 'react';
-import './customerLogin.css';
-import { useNavigate } from 'react-router-dom';
-import { api } from './FirebaseConfig';
-import axios from 'axios';
-import { Modal } from 'react-bootstrap';
-;
-
+import React, { useState } from "react";
+import "./customerLogin.css";
+import { useNavigate } from "react-router-dom";
+import { api } from "./FirebaseConfig";
+import axios from "axios";
+import { Modal } from "react-bootstrap";
 const CustomerLogin = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    userid: '',
-    password: ''
+    userid: "",
+    password: "",
   });
 
   const [fetchedData, setFetechedData] = useState([]);
@@ -19,52 +17,41 @@ const CustomerLogin = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prevState => ({
+    setFormData((prevState) => ({
       ...prevState,
-      [name]: value
+      [name]: value,
     }));
   };
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     setShowModal(true);
     const userid = formData.userid;
     const password = formData.password;
 
-    try{
-      const response = await axios.get(api+`/login?userkey=${userid}&password=${password}`);
+    try {
+      const response = await axios.get(
+        api + `/customer/login?userkey=${userid}&password=${password}`
+      );
 
-      if(response.status !== 200 ){
+      if (response.status !== 200) {
         return;
       }
 
       const data = response.data;
-      if(data){
+      if (data) {
         const userData = [];
         Object.keys(data).forEach((user) => {
           const acc = data[user];
           userData.push(acc);
         });
-        
-        setFetechedData(userData);
-        
-        
-      }
 
-    }catch(e){
+        setFetechedData(userData);
+      }
+    } catch (e) {
       console.log(e);
     }
-
-    
-
-
-
-    
-
-    
-
-    
   };
 
   return (
@@ -100,19 +87,20 @@ const CustomerLogin = () => {
         </form>
         <div className="additional-options">
           <label>Your Default Password is: 123456</label>
-          <a href='/' onClick={() => setShowModal(true)}>Forgot Password?</a>
+          <a href="/" onClick={() => setShowModal(true)}>
+            Forgot Password?
+          </a>
         </div>
       </div>
 
-
-      <Modal show={showModal} onHide={() => setShowModal(false)}>
+      <Modal show={showModal} onHide={() => {setFetechedData([]); setShowModal(false)}}>
         <Modal.Header closeButton>
           <Modal.Title>Your Accounts</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <div className=''>
-            <table className='table table-striped table-hover align-middle'>
-              <thead className='table-primary'>
+          <div className="">
+            <table className="table table-striped table-hover align-middle">
+              <thead className="table-primary">
                 <tr>
                   <th>Name</th>
                   <th>Mobile</th>
@@ -121,26 +109,31 @@ const CustomerLogin = () => {
               </thead>
               <tbody>
                 {fetchedData.length > 0 ? (
-                  fetchedData.map(({userid, mobile}, index )=> (
+                  fetchedData.map(({ fullName, mobileNo, _id, partnerId }, index) => (
                     <tr key={index}>
-                      <td>{userid}</td>
-                      <td>{mobile}</td>
-                      <td><button onClick={() => {
-                        localStorage.setItem('userid', userid);
-                        navigate('/LandingPage')
-                      }} className='btn btn-success'>Login</button></td>
+                      <td>{fullName}</td>
+                      <td>{mobileNo}</td>
+                      <td>
+                        <button
+                          onClick={() => {
+                            localStorage.setItem("userid", _id);
+                            localStorage.setItem("partnerId", partnerId);
+                            navigate("/LandingPage");
+                          }}
+                          className="btn btn-success"
+                        >
+                          Login
+                        </button>
+                      </td>
                     </tr>
                   ))
-                ):(
-                  <tr>
-
-                  </tr>
+                ) : (
+                  <tr></tr>
                 )}
               </tbody>
             </table>
           </div>
         </Modal.Body>
-
       </Modal>
     </div>
   );

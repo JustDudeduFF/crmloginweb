@@ -25,11 +25,11 @@ function App() {
             <p>We use the information we collect to provide, maintain, and improve our services, communicate with you, and protect our legal rights.</p>
             
             <h6>3. Right to Collect Personal Information</h6>
-            <p>You can visit the Websites (excluding the 'Contact Us' portion of the Websites) without revealing any information about Yourself. We shall collect information that is said to be autonomous over the Sigma Networks network. IP addresses and information collected via "Cookies" are examples of autonomous information. "Cookies" are small text files that store basic information that a Websites can use to recognize repeated visits and as an example, recall Your name if this has been previously supplied. Aggregated data is compiled into statistical and demographic information that Sigma Networks uses, and may share with others, to show preferences of its User base as a whole, but not the preferences of any individual User. Shared aggregated data does not include a level of detail that will permit anyone to identify any individual person's usage or preferences. By accepting
+            <p>You can visit the Websites (excluding the 'Contact Us' portion of the Websites) without revealing any information about Yourself. We shall collect information that is said to be autonomous over the Sigma Business Solutions network. IP addresses and information collected via "Cookies" are examples of autonomous information. "Cookies" are small text files that store basic information that a Websites can use to recognize repeated visits and as an example, recall Your name if this has been previously supplied. Aggregated data is compiled into statistical and demographic information that Sigma Business Solutions uses, and may share with others, to show preferences of its User base as a whole, but not the preferences of any individual User. Shared aggregated data does not include a level of detail that will permit anyone to identify any individual person's usage or preferences. By accepting
 
             the terms and conditions contained herein, You agree that We may collect and store Your personal information which will only be used for the purposes for which it was collected or as set out in this Privacy Policy and any other legitimate purpose.
 
-            The Websites may contain hyperlinks to websites of Sigma Networks business partners, advertisers, sponsors and to such other websites that are not affiliated with Sigma Networks and that may or may not have similar practices in place to protect the privacy of information that You supply. Sigma Networks encourages everyone to review the privacy statements of each of the websites that are linked to or accessed from the Website so that there will be no surprise as to how each visited website collects, uses and distributes information. Sigma Networks cannot warrant the security of the information which You transmit to those websites.</p>
+            The Websites may contain hyperlinks to websites of Sigma Business Solutions business partners, advertisers, sponsors and to such other websites that are not affiliated with Sigma Business Solutions and that may or may not have similar practices in place to protect the privacy of information that You supply. Sigma Business Solutions encourages everyone to review the privacy statements of each of the websites that are linked to or accessed from the Website so that there will be no surprise as to how each visited website collects, uses and distributes information. Sigma Business Solutions cannot warrant the security of the information which You transmit to those websites.</p>
             {/* Add more privacy policy content as needed */}
           </div>
           <div className="modal-footer">
@@ -50,10 +50,10 @@ function App() {
           </div>
           <div className="modal-body">
             <h6>1. Acceptance of Terms</h6>
-            <p>By accessing and using Sigma Networks' services, you accept and agree to be bound by the terms and conditions outlined here.</p>
+            <p>By accessing and using Sigma Business Solutions' services, you accept and agree to be bound by the terms and conditions outlined here.</p>
             
             <h6>2. Service Description</h6>
-            <p>Sigma Networks provides internet connectivity services subject to availability in your area. Service speeds may vary based on network conditions and technical limitations.</p>
+            <p>Sigma Business Solutions provides internet connectivity services subject to availability in your area. Service speeds may vary based on network conditions and technical limitations.</p>
             
             <h6>3. User Responsibilities</h6>
             <p>Users are responsible for maintaining the confidentiality of their account information and for all activities that occur under their account.</p>
@@ -62,7 +62,7 @@ function App() {
             <p>Users agree to pay all fees and charges associated with their chosen service plan. Payments are due according to the billing cycle specified in their service agreement.</p>
             
             <h6>5. Service Modifications</h6>
-            <p>Sigma Networks reserves the right to modify, suspend, or discontinue any aspect of its services at any time, with or without notice.</p>
+            <p>Sigma Business Solutions reserves the right to modify, suspend, or discontinue any aspect of its services at any time, with or without notice.</p>
           </div>
           <div className="modal-footer">
             <button type="button" className="btn btn-secondary" onClick={() => setShowTermsModal(false)}>Close</button>
@@ -130,14 +130,14 @@ function App() {
             <div className="col-lg-6">
                 <img 
                   src={aboutImage} 
-                  alt="About Sigma Networks" 
+                  alt="About Sigma Business Solutions" 
                   className="img-fluid rounded shadow-lg"
                 />
               </div>
               <div className="col-lg-6">
-                <h2 className="mb-4">About Sigma Networks</h2>
+                <h2 className="mb-4">About Sigma Business Solutions</h2>
                 <p className="lead mb-4">We are a leading Internet Service Provider committed to delivering high-speed connectivity solutions across India.</p>
-                <p className="mb-4">Founded in 2020, Sigma Networks has quickly grown to become one of the most trusted names in the telecommunications industry. Our state-of-the-art fiber-optic infrastructure and dedication to customer satisfaction set us apart from the competition.</p>
+                <p className="mb-4">Founded in 2020, Sigma Business Solutions has quickly grown to become one of the most trusted names in the telecommunications industry. Our state-of-the-art fiber-optic infrastructure and dedication to customer satisfaction set us apart from the competition.</p>
                 <div className="row g-4 mt-2">
                   <div className="col-sm-6">
                     <div className="d-flex align-items-center">
@@ -305,7 +305,7 @@ function App() {
           <div className="container">
             <div className="row">
               <div className="col-md-4 mb-3">
-                <h5>Sigma Networks</h5>
+                <h5>Sigma Business Solutions</h5>
                 <p className="mb-1">4649/121-C, Steet No.5, Budh Bazar</p>
                 <p className="mb-1">New Modern Shahdara, New Delhi - 110032</p>
                 <p className="mb-1">India</p>
@@ -360,7 +360,7 @@ function App() {
             </div>
             <hr className="my-3" />
             <div className="text-center">
-              <small>&copy; 2025 Sigma Networks. All rights reserved.</small>
+              <small>&copy; 2025 Sigma Business Solutions. All rights reserved.</small>
               <br />
               <small>Powered by: JustDude</small>
             </div>
